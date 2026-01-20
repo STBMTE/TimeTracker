@@ -1,12 +1,39 @@
+version: "3.9"
+
 services:
   db:
-    image: 'postgres:latest'
+    image: postgres:latest
     container_name: activity-db
+    restart: always
     environment:
-      POSTGRES_DB: activitydb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: activitydb
     volumes:
-      - ./backend/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - timetracker-net
+
+  app:
+    build: .
+    container_name: timetracker-app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/activitydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_FLYWAY_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    networks:
+      - timetracker-net
+
+volumes:
+  pgdata:
+
+networks:
+  timetracker-net:
+    driver: bridge
