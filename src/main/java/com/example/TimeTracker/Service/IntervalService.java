@@ -20,7 +20,7 @@ public class IntervalService {
     }
 
     public List<Interval> getAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByStartAsc();
     }
 
     public Interval add(@Valid IntervalDTO dto) throws Exception {
