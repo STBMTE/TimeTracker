@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Трекер активностей</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <h2>Трекер активностей</h2>
+        <form @submit.prevent="addInterval">
+            <label>
+                Начало:
+                <input
+                        type="time"
+                        step="60"
+                        v-model="form.startTime"
+                        required
+                />
+            </label>
+            <label>
+                Конец:
+                <input
+                        type="time"
+                        step="60"
+                        v-model="form.endTime"
+                        required
+                />
+            </label>
+            <label>
+                Тип активности:
+                <select v-model="form.type" required>
+                    <option value="WORK">Работа</option>
+                    <option value="BREAK">Перерыв</option>
+                </select>
+            </label>
+            <button type="submit">Добавить</button>
+            <div v-if="error" class="error">{{ error }}</div>
+        </form>
+
+        <h3>Список интервалов</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Начало</th>
+                <th>Конец</th>
+                <th>Тип</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in intervals" :key="item.id">
+                <td>{{ item.id }}</td>
+                <td>{{ formatTime(item.start) }}</td>
+                <td>{{ formatTime(item.end) }}</td>
+                <td>{{ item.type === 'WORK' ? 'Работа' : 'Перерыв' }}</td>
+            </tr>
+            <tr v-if="intervals.length === 0">
+                <td colspan="4" class="empty">Нет добавленных интервалов</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
